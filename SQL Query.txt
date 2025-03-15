@@ -1,0 +1,62 @@
+Tennis SQL Queries:
+
+1)All competitions along with their category name:
+  Select competitions_id, competition_name AS category_name FROM competitions;
+  
+2)Number of competitions in each category:
+  SELECT category_id, COUNT(*) AS number_of_competitions FROM competitions GROUP BY category_id;
+
+3)competitions of type 'Doubles:
+  Select competitions_id FROM competitions WHERE type='doubles';
+
+4)competitions that belong to a ITF category:
+  Select competitions_id,competition_name FROM competitions WHERE competition_name LIKE '%itf%'; 
+
+5)Parent competitions and their sub-competitions:
+  Select parent_id, competitions_id FROM competitions where parent_id <> 'Not Available';
+
+6)Distribution of competition types by category:
+  SELECT category_name, COUNT(*) AS number_of_competitions FROM category JOIN competitions ON competitions.category_id=category.category_id GROUP BY competitions.category_id;
+
+7)All competitions with no parent (top-level competitions):
+  Select competitions_id,competition_name FROM competitions WHERE parent_id='Not Available'
+
+8)All venues along with their associated complex name:
+  SELECT complexes.complex_name, venues.venue_id FROM complexes JOIN venues ON complexes.complex_id=venues.complex_id ORDER BY complexes.complex_name; 
+
+9)Number of venues in each complex:
+  SELECT complex_id, COUNT(*) AS number_of_venues FROM venues GROUP BY complex_id;
+
+10)Details of venues in country, Chile:
+   Select * FROM venues where country_name='Chile';
+
+11)All venues and their timezones:
+   Select distinct venue_name, timezone from venues ORDER BY timezone;
+
+12)Complexes that have more than one venue:
+   SELECT venues.complex_id, complexes.complex_name, COUNT(*) FROM venues JOIN complexes ON complexes.complex_id=venues.complex_id GROUP BY complex_id HAVING COUNT(*) > 1
+
+13)Venues grouped by country:
+   Select distinct venue_name, country_name from venues ORDER BY country_name; 
+
+
+14)All venues for a specific complex:
+   SELECT complexes.complex_name, venues.venue_id FROM complexes JOIN venues ON complexes.complex_id=venues.complex_id WHERE complexes.complex_name='KPI Park'; 
+
+15)All competitors with their rank and points:
+   SELECT comptr_table.competitor_id, name, rankk, points FROM comptr_table JOIN comptr_rankings ON comptr_table.competitor_id=comptr_rankings.competitor_id;
+
+16)Competitors ranked in the top 5:
+   Select rankk, comptr_rankings.competitor_id,name from comptr_rankings JOIN comptr_table ON comptr_table.competitor_id=comptr_rankings.competitor_id where rankk<=5 ORDER BY rankk;
+
+17)Competitors with no rank movement:
+   SELECT comptr_table.competitor_id,name FROM comptr_table JOIN comptr_rankings ON comptr_table.competitor_id=comptr_rankings.competitor_id WHERE movement=0; 
+
+18)Total points of competitors from Croatia:
+   SELECT country, SUM(points) FROM comptr_table JOIN comptr_rankings ON comptr_table.competitor_id=comptr_rankings.competitor_id WHERE country='Croatia;
+
+19)Number of competitors per country:
+   SELECT country, COUNT(*) AS number_of_competitors FROM comptr_table GROUP BY country;
+
+20)Competitors with the highest points:
+   SELECT comptr_rankings.competitor_id,name,points FROM comptr_rankings JOIN comptr_table ON comptr_table.competitor_id=comptr_rankings.competitor_id ORDER BY points DESC LIMIT 5; 
